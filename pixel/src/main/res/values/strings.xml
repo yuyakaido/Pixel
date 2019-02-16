@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="filter_brightness">Brightness</string>
+    <string name="filter_contrast">Contrast</string>
+    <string name="filter_saturation">Saturation</string>
+    <string name="filter_highlight">Highlight</string>
+    <string name="filter_shadow">Shadow</string>
+    <string name="filter_sharpen">Sharpen</string>
+</resources>
