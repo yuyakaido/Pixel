@@ -1,191 +1,106 @@
 package com.yuyakaido.android.pixel;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageBrightnessFilter;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageContrastFilter;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageHighlightShadowFilter;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageSaturationFilter;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageSharpenFilter;
+import jp.co.cyberagent.android.gpuimage.filter.GPUImageLookupFilter;
 
-public abstract class Filter<T extends GPUImageFilter> {
+abstract class Filter {
 
-    abstract int getNameResourceId();
-    abstract int getIconResourceId();
-    abstract int getPercentage();
-    abstract T getFilter();
-    abstract void apply(int percentage);
+    abstract int getLookupTableResourceId();
+    abstract GPUImageLookupFilter getLookupFilter();
 
-    float normalize(int percentage, float start, float end) {
-        return (end - start) * percentage / 100.0f + start;
-    }
-
-    static List<Filter> newFilters() {
+    static List<Filter> newFilters(final Resources resources) {
         return new ArrayList<Filter>() {{
-            add(new Brightness());
-            add(new Contrast());
-            add(new Saturation());
-            add(new Highlight());
-            add(new Shadow());
-            add(new Sharpen());
+            add(new Neutral(resources));
+            add(new Amatorka(resources));
+            add(new MissEtikate(resources));
+            add(new SoftElegance1(resources));
+            add(new SoftElegance2(resources));
         }};
     }
 
-    public static class Brightness extends Filter<GPUImageBrightnessFilter> {
-        private GPUImageBrightnessFilter filter = new GPUImageBrightnessFilter(0.0f);
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_brightness;
+    static class Neutral extends Filter {
+        private final GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
+        Neutral(Resources resources) {
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, getLookupTableResourceId());
+            lookupFilter.setBitmap(bitmap);
         }
         @Override
-        int getIconResourceId() {
-            return R.drawable.ic_brightness;
+        int getLookupTableResourceId() {
+            return R.drawable.lookup_neutral;
         }
         @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageBrightnessFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setBrightness(normalize(percentage, -1.0f, 1.0f));
+        GPUImageLookupFilter getLookupFilter() {
+            return lookupFilter;
         }
     }
 
-    public static class Contrast extends Filter<GPUImageContrastFilter> {
-        private GPUImageContrastFilter filter = new GPUImageContrastFilter(1.0f);
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_contrast;
+    static class Amatorka extends Filter {
+        private final GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
+        Amatorka(Resources resources) {
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, getLookupTableResourceId());
+            lookupFilter.setBitmap(bitmap);
         }
         @Override
-        int getIconResourceId() {
-            return R.drawable.ic_contrast;
+        int getLookupTableResourceId() {
+            return R.drawable.lookup_amatorka;
         }
         @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageContrastFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setContrast(normalize(percentage, 0.0f, 2.0f));
+        GPUImageLookupFilter getLookupFilter() {
+            return lookupFilter;
         }
     }
 
-    public static class Saturation extends Filter<GPUImageSaturationFilter> {
-        private GPUImageSaturationFilter filter = new GPUImageSaturationFilter(1.0f);
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_saturation;
+    static class MissEtikate extends Filter {
+        private final GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
+        MissEtikate(Resources resources) {
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, getLookupTableResourceId());
+            lookupFilter.setBitmap(bitmap);
         }
         @Override
-        int getIconResourceId() {
-            return R.drawable.ic_saturation;
+        int getLookupTableResourceId() {
+            return R.drawable.lookup_miss_etikate;
         }
         @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageSaturationFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setSaturation(normalize(percentage, 0.0f, 2.0f));
+        GPUImageLookupFilter getLookupFilter() {
+            return lookupFilter;
         }
     }
 
-    public static class Highlight extends Filter<GPUImageHighlightShadowFilter> {
-        private GPUImageHighlightShadowFilter filter = new GPUImageHighlightShadowFilter();
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_highlight;
+    static class SoftElegance1 extends Filter {
+        private final GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
+        SoftElegance1(Resources resources) {
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, getLookupTableResourceId());
+            lookupFilter.setBitmap(bitmap);
         }
         @Override
-        int getIconResourceId() {
-            return R.drawable.ic_highlight;
+        int getLookupTableResourceId() {
+            return R.drawable.lookup_soft_elegance_1;
         }
         @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageHighlightShadowFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setHighlights(normalize(percentage, 0.0f, 1.0f));
+        GPUImageLookupFilter getLookupFilter() {
+            return lookupFilter;
         }
     }
 
-    public static class Shadow extends Filter<GPUImageHighlightShadowFilter> {
-        private GPUImageHighlightShadowFilter filter = new GPUImageHighlightShadowFilter();
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_shadow;
+    static class SoftElegance2 extends Filter {
+        private final GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
+        SoftElegance2(Resources resources) {
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, getLookupTableResourceId());
+            lookupFilter.setBitmap(bitmap);
         }
         @Override
-        int getIconResourceId() {
-            return R.drawable.ic_shadow;
+        int getLookupTableResourceId() {
+            return R.drawable.lookup_soft_elegance_2;
         }
         @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageHighlightShadowFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setShadows(normalize(percentage, 0.0f, 1.0f));
-        }
-    }
-
-    public static class Sharpen extends Filter<GPUImageSharpenFilter> {
-        private GPUImageSharpenFilter filter = new GPUImageSharpenFilter(0.0f);
-        private int percentage = 50;
-        @Override
-        int getNameResourceId() {
-            return R.string.filter_sharpen;
-        }
-        @Override
-        int getIconResourceId() {
-            return R.drawable.ic_sharpen;
-        }
-        @Override
-        public int getPercentage() {
-            return percentage;
-        }
-        @Override
-        public GPUImageSharpenFilter getFilter() {
-            return filter;
-        }
-        @Override
-        void apply(int percentage) {
-            this.percentage = percentage;
-            filter.setSharpness(normalize(percentage, -4.0f, 4.0f));
+        GPUImageLookupFilter getLookupFilter() {
+            return lookupFilter;
         }
     }
 

@@ -19,27 +19,78 @@
 
     </com.yuyakaido.android.pixel.SquareRelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical">
+        android:layout_weight="1">
 
-        <SeekBar
-            android:id="@+id/seek_bar"
+        <RelativeLayout
+            android:id="@+id/filter_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:visibility="visible">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/filter_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
+                android:clipToPadding="false">
+            </android.support.v7.widget.RecyclerView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/editor_container"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:visibility="gone">
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="12dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/editor_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/filter_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/filter"/>
+
+        <Button
+            android:id="@+id/editor_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/editor"/>
 
     </LinearLayout>
 
