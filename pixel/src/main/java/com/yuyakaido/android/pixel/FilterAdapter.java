@@ -1,7 +1,6 @@
 package com.yuyakaido.android.pixel;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
-import jp.co.cyberagent.android.gpuimage.filter.GPUImageLookupFilter;
 
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
 
@@ -29,23 +27,32 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int type) {
-        ViewHolder holder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_filter, parent, false));
-        holder.preview.setImage(Uri.parse("file:///android_asset/sample.jpg"));
-        return holder;
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_filter, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Filter currentFilter = filters.get(position);
-        GPUImageLookupFilter lookupFilter = new GPUImageLookupFilter();
-        lookupFilter.setBitmap(BitmapFactory.decodeResource(context.getResources(), currentFilter.getLookupTableResourceId()));
-        holder.preview.setFilter(lookupFilter);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.selectFilter(currentFilter);
             }
         });
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.preview.getGPUImage().deleteImage();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Filter filter = filters.get(holder.getAdapterPosition());
+        holder.preview.setImage(Uri.parse("file:///android_asset/sample.jpg"));
+        holder.preview.setFilter(filter.getLookupFilter(context));
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
@@ -53,7 +54,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                 newFilters.add(oldFilter);
             }
         }
-        newFilters.add(filter.getLookupFilter());
+        newFilters.add(filter.getLookupFilter(this));
         this.group = new GPUImageFilterGroup(newFilters);
 
         gpuImageView.setFilter(group);
@@ -78,7 +79,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
     }
 
     private void setupFilter() {
-        List<Filter> filters = Filter.newFilters(getResources());
+        List<Filter> filters = Arrays.asList(Filter.values());
         filter = filters.get(0);
 
         filterContainer = findViewById(R.id.filter_container);
@@ -116,7 +117,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     private void setupGPUImageView() {
         group = new GPUImageFilterGroup();
-        group.addFilter(filter.getLookupFilter());
+        group.addFilter(filter.getLookupFilter(this));
         group.addFilter(editor.getFilter());
 
         gpuImageView = findViewById(R.id.gpu_image_view);
