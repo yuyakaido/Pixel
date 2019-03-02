@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
@@ -21,13 +20,19 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageLookupFilter;
 
 public class PixelActivity extends AppCompatActivity implements FilterListener, EditorListener {
 
-    private Filter filter;
-    private Editor editor;
+    private State state = new State();
+
+    // Preview
     private GPUImageView gpuImageView;
     private GPUImageFilterGroup group;
 
+    // Filter
     private View filterContainer;
+    private FilterAdapter filterAdapter;
+
+    // Editor
     private View editorContainer;
+    private EditorAdapter editorAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,10 +46,10 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     @Override
     public void selectFilter(Filter filter) {
-        if (this.filter == filter) {
+        if (state.getFilter() == filter) {
             return;
         } else {
-            this.filter = filter;
+            state.setFilter(filter);
         }
 
         List<GPUImageFilter> oldFilters = group.getFilters();
@@ -62,10 +67,10 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     @Override
     public void selectEditor(Editor editor) {
-        if (this.editor == editor) {
+        if (state.getEditor() == editor) {
             return;
         } else {
-            this.editor = editor;
+            state.setEditor(editor);
         }
 
         if (!group.getFilters().contains(editor.getFilter())) {
@@ -75,29 +80,25 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         gpuImageView.setFilter(group);
 
         SeekBar seekBar = findViewById(R.id.seek_bar);
-        seekBar.setProgress(editor.getPercentage());
+        seekBar.setProgress(editor.getCurrentPercentage());
     }
 
     private void setupFilter() {
-        List<Filter> filters = Arrays.asList(Filter.values());
-        filter = filters.get(0);
-
         filterContainer = findViewById(R.id.filter_container);
+        filterAdapter = new FilterAdapter(filterContainer.getContext(), state, this);
 
         RecyclerView recyclerView = filterContainer.findViewById(R.id.filter_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new FilterAdapter(recyclerView.getContext(), filters, this));
+        recyclerView.setAdapter(filterAdapter);
     }
 
     private void setupEditor() {
-        List<Editor> editors = Editor.newEditors();
-        editor = editors.get(0);
-
         editorContainer = findViewById(R.id.editor_container);
+        editorAdapter = new EditorAdapter(editorContainer.getContext(), state, this);
 
         RecyclerView recyclerView = editorContainer.findViewById(R.id.editor_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new EditorAdapter(recyclerView.getContext(), editors, this));
+        recyclerView.setAdapter(editorAdapter);
 
         SeekBar seekBar = editorContainer.findViewById(R.id.seek_bar);
         seekBar.setProgress(50);
@@ -105,7 +106,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    editor.apply(progress);
+                    state.getEditor().apply(progress);
+                    editorAdapter.notifyDataSetChanged();
                 }
             }
             @Override
@@ -117,8 +119,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     private void setupGPUImageView() {
         group = new GPUImageFilterGroup();
-        group.addFilter(filter.getLookupFilter(this));
-        group.addFilter(editor.getFilter());
+        group.addFilter(state.getFilter().getLookupFilter(this));
+        group.addFilter(state.getEditor().getFilter());
 
         gpuImageView = findViewById(R.id.gpu_image_view);
         gpuImageView.setImage(Uri.parse("file:///android_asset/sample.jpg"));

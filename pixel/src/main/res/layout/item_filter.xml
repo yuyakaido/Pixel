@@ -3,13 +3,28 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_height="120dp"
     android:padding="8dp">
 
-    <jp.co.cyberagent.android.gpuimage.GPUImageView
-        android:id="@+id/preview"
+    <com.yuyakaido.android.pixel.SquareRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </jp.co.cyberagent.android.gpuimage.GPUImageView>
+
+        <jp.co.cyberagent.android.gpuimage.GPUImageView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </jp.co.cyberagent.android.gpuimage.GPUImageView>
+
+    </com.yuyakaido.android.pixel.SquareRelativeLayout>
+
+    <View
+        android:id="@+id/is_dirty"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/ic_is_dirty"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -8,19 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
 
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<Filter> filters;
+    private final State state;
     private final FilterListener listener;
 
-    FilterAdapter(Context context, List<Filter> filters, FilterListener listener) {
+    FilterAdapter(Context context, State state, FilterListener listener) {
         this.context = context;
-        this.filters = filters;
+        this.state = state;
         this.listener = listener;
     }
 
@@ -31,12 +29,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Filter currentFilter = filters.get(position);
+    public void onBindViewHolder(final @NonNull ViewHolder holder, int position) {
+        final Filter filter = state.getFilters().get(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.selectFilter(currentFilter);
+                listener.selectFilter(filter);
             }
         });
     }
@@ -44,27 +42,46 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder
     @Override
     public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
+        Filter filter = state.getFilters().get(holder.getAdapterPosition());
         holder.preview.getGPUImage().deleteImage();
+        state.remoteFilterListener(filter);
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+    public void onViewAttachedToWindow(final @NonNull ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        Filter filter = filters.get(holder.getAdapterPosition());
+        final Filter filter = state.getFilters().get(holder.getAdapterPosition());
         holder.preview.setImage(Uri.parse("file:///android_asset/sample.jpg"));
         holder.preview.setFilter(filter.getLookupFilter(context));
+        state.addFilterListener(filter, new State.FilterListener() {
+            @Override
+            public void onFilterSelect() {
+                if (state.isDirty(filter)) {
+                    holder.isDirty.setVisibility(View.VISIBLE);
+                } else {
+                    holder.isDirty.setVisibility(View.GONE);
+                }
+            }
+        });
+        if (state.isDirty(filter)) {
+            holder.isDirty.setVisibility(View.VISIBLE);
+        } else {
+            holder.isDirty.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return filters.size();
+        return state.getFilters().size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         GPUImageView preview;
+        View isDirty;
         ViewHolder(View view) {
             super(view);
             this.preview = view.findViewById(R.id.preview);
+            this.isDirty = view.findViewById(R.id.is_dirty);
         }
     }
 

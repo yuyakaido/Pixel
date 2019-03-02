@@ -14,12 +14,17 @@ abstract class Editor<T extends GPUImageFilter> {
 
     abstract int getNameResourceId();
     abstract int getIconResourceId();
-    abstract int getPercentage();
+    abstract int getDefaultPercentage();
+    abstract int getCurrentPercentage();
     abstract T getFilter();
     abstract void apply(int percentage);
 
     float normalize(int percentage, float start, float end) {
         return (end - start) * percentage / 100.0f + start;
+    }
+
+    boolean isDirty() {
+        return getCurrentPercentage() != getDefaultPercentage();
     }
 
     static List<Editor> newEditors() {
@@ -34,8 +39,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Brightness extends Editor<GPUImageBrightnessFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageBrightnessFilter filter = new GPUImageBrightnessFilter(0.0f);
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_brightness;
@@ -45,7 +51,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_brightness;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override
@@ -60,8 +70,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Contrast extends Editor<GPUImageContrastFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageContrastFilter filter = new GPUImageContrastFilter(1.0f);
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_contrast;
@@ -71,7 +82,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_contrast;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override
@@ -86,8 +101,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Saturation extends Editor<GPUImageSaturationFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageSaturationFilter filter = new GPUImageSaturationFilter(1.0f);
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_saturation;
@@ -97,7 +113,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_saturation;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override
@@ -112,8 +132,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Highlight extends Editor<GPUImageHighlightShadowFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageHighlightShadowFilter filter = new GPUImageHighlightShadowFilter();
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_highlight;
@@ -123,7 +144,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_highlight;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override
@@ -138,8 +163,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Shadow extends Editor<GPUImageHighlightShadowFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageHighlightShadowFilter filter = new GPUImageHighlightShadowFilter();
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_shadow;
@@ -149,7 +175,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_shadow;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override
@@ -164,8 +194,9 @@ abstract class Editor<T extends GPUImageFilter> {
     }
 
     static class Sharpen extends Editor<GPUImageSharpenFilter> {
+        private static final int DEFAULT = 50;
         private GPUImageSharpenFilter filter = new GPUImageSharpenFilter(0.0f);
-        private int percentage = 50;
+        private int percentage = DEFAULT;
         @Override
         int getNameResourceId() {
             return R.string.editor_sharpen;
@@ -175,7 +206,11 @@ abstract class Editor<T extends GPUImageFilter> {
             return R.drawable.ic_sharpen;
         }
         @Override
-        public int getPercentage() {
+        int getDefaultPercentage() {
+            return DEFAULT;
+        }
+        @Override
+        public int getCurrentPercentage() {
             return percentage;
         }
         @Override

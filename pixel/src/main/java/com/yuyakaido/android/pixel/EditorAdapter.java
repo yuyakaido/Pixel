@@ -9,17 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 public class EditorAdapter extends RecyclerView.Adapter<EditorAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<Editor> editors;
+    private final State state;
     private final EditorListener listener;
 
-    EditorAdapter(Context context, List<Editor> editors, EditorListener listener) {
+    EditorAdapter(Context context, State state, EditorListener listener) {
         this.context = context;
-        this.editors = editors;
+        this.state = state;
         this.listener = listener;
     }
 
@@ -31,9 +29,14 @@ public class EditorAdapter extends RecyclerView.Adapter<EditorAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Editor editor = editors.get(position);
+        final Editor editor = state.getEditors().get(position);
         holder.name.setText(editor.getNameResourceId());
         holder.icon.setImageResource(editor.getIconResourceId());
+        if (state.isDirty(editor)) {
+            holder.isDirty.setVisibility(View.VISIBLE);
+        } else {
+            holder.isDirty.setVisibility(View.GONE);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,16 +47,18 @@ public class EditorAdapter extends RecyclerView.Adapter<EditorAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return editors.size();
+        return state.getEditors().size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name;
         ImageView icon;
+        View isDirty;
         ViewHolder(View view) {
             super(view);
             this.name = view.findViewById(R.id.name);
             this.icon = view.findViewById(R.id.icon);
+            this.isDirty = view.findViewById(R.id.is_dirty);
         }
     }
 
