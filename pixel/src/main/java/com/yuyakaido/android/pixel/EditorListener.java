@@ -1,5 +1,5 @@
 package com.yuyakaido.android.pixel;
 
-public interface EditorListener {
+interface EditorListener {
     void selectEditor(Editor editor);
 }

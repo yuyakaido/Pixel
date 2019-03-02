@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageView;
 
-public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
+class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
 
     private final Context context;
     private final State state;

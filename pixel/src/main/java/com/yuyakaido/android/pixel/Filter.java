@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageLookupFilter;
 
-public enum Filter {
+enum Filter {
     Neutral(R.drawable.lookup_neutral),
     Amatorka(R.drawable.lookup_amatorka),
     MissEtikate(R.drawable.lookup_miss_etikate),

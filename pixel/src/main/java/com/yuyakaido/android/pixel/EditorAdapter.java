@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class EditorAdapter extends RecyclerView.Adapter<EditorAdapter.ViewHolder> {
+class EditorAdapter extends RecyclerView.Adapter<EditorAdapter.ViewHolder> {
 
     private final Context context;
     private final State state;

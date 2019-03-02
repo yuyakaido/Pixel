@@ -1,5 +1,5 @@
 package com.yuyakaido.android.pixel;
 
-public interface FilterListener {
+interface FilterListener {
     void selectFilter(Filter filter);
 }
