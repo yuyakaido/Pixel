@@ -63,6 +63,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         this.group = new GPUImageFilterGroup(newFilters);
 
         gpuImageView.setFilter(group);
+
+        filterAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -81,6 +83,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
         SeekBar seekBar = findViewById(R.id.seek_bar);
         seekBar.setProgress(editor.getCurrentPercentage());
+
+        editorAdapter.notifyDataSetChanged();
     }
 
     private void setupFilter() {
