@@ -1,7 +1,7 @@
 package com.yuyakaido.android.pixel;
 
 public enum Feature {
-    Crop,
+    Adjust,
     Filter,
     Editor
 }

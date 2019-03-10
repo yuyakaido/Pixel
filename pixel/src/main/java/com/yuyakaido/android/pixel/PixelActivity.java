@@ -12,11 +12,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
+import com.yalantis.ucrop.view.GestureCropImageView;
+import com.yalantis.ucrop.view.OverlayView;
+import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
+import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,8 +48,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
     // Feature
     private View buttonContainer;
 
-    // Crop
-    private View cropContainer;
+    // Adjust
+    private View adjustContainer;
 
     // Filter
     private View filterContainer;
@@ -59,7 +64,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pixel);
         setupSampleImage();
-        setupCrop();
+        setupAdjust();
         setupFilter();
         setupEditor();
         setupGPUImageView();
@@ -143,22 +148,65 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         }
     }
 
-    private void setupCrop() {
-        try {
-            uCropView = findViewById(R.id.ucrop_view);
-            uCropView.getCropImageView().setRotateEnabled(false);
-            uCropView.getCropImageView().setPadding(0, 0, 0, 0);
-            uCropView.getCropImageView().setTargetAspectRatio(CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
-            uCropView.getCropImageView().setImageUri(state.getInputUri(), state.getOutputUri());
-            uCropView.getOverlayView().setPadding(0, 0, 0, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void setupAdjust() {
+        uCropView = findViewById(R.id.ucrop_view);
+        final GestureCropImageView cropImageView = uCropView.getCropImageView();
+        final OverlayView overlayView = uCropView.getOverlayView();
+        adjustContainer = findViewById(R.id.adjust_container);
+        final TextView rotationAngle = adjustContainer.findViewById(R.id.rotation_angle);
+        View rotationCancel = adjustContainer.findViewById(R.id.rotation_cancel);
+        View rotationLeft = adjustContainer.findViewById(R.id.rotation_left);
+        HorizontalProgressWheelView rotationWheel = adjustContainer.findViewById(R.id.rotation_wheel);
+        Button cancelButton = adjustContainer.findViewById(R.id.adjust_cancel);
+        Button doneButton = adjustContainer.findViewById(R.id.adjust_done);
 
-        cropContainer = findViewById(R.id.crop_container);
-        Button cancelButton = cropContainer.findViewById(R.id.crop_cancel_button);
-        Button doneButton = cropContainer.findViewById(R.id.crop_done_button);
+        rotationAngle.setText(getString(R.string.angle, 0));
 
+        cropImageView.setTransformImageListener(new TransformImageView.TransformImageListener() {
+            @Override
+            public void onLoadComplete() {
+                rotationAngle.setText(getString(R.string.angle, 0));
+            }
+            @Override
+            public void onLoadFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onRotate(float currentAngle) {
+                rotationAngle.setText(getString(R.string.angle, (int) currentAngle));
+            }
+            @Override
+            public void onScale(float currentScale) {}
+        });
+        rotationCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImageView.postRotate(-cropImageView.getCurrentAngle());
+                cropImageView.setImageToWrapCropBounds();
+            }
+        });
+        rotationLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImageView.postRotate(-90);
+                cropImageView.setImageToWrapCropBounds();
+            }
+        });
+        rotationWheel.setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
+            @Override
+            public void onScrollStart() {
+                cropImageView.cancelAllAnimations();
+            }
+            @Override
+            public void onScroll(float delta, float totalDistance) {
+                int sensitivity = 50;
+                cropImageView.postRotate(delta / sensitivity);
+            }
+            @Override
+            public void onScrollEnd() {
+                cropImageView.setImageToWrapCropBounds();
+            }
+        });
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +216,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uCropView.getCropImageView().cropAndSaveImage(
+                cropImageView.cropAndSaveImage(
                         Bitmap.CompressFormat.PNG,
                         100,
                         new BitmapCropCallback() {
@@ -182,6 +230,11 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                                     @Override
                                     public void run() {
                                         toggle(Feature.Filter);
+                                        try {
+                                            cropImageView.setImageUri(state.getInputUri(), state.getOutputUri());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }, 200);
                             }
@@ -193,6 +246,16 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                 );
             }
         });
+
+        try {
+            cropImageView.setRotateEnabled(false);
+            cropImageView.setPadding(0, 0, 0, 0);
+            cropImageView.setTargetAspectRatio(CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
+            cropImageView.setImageUri(state.getInputUri(), state.getOutputUri());
+            overlayView.setPadding(0, 0, 0, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupFilter() {
@@ -242,16 +305,16 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     private void setupButtons() {
         buttonContainer = findViewById(R.id.button_container);
-        Button cropButton = findViewById(R.id.crop_button);
+        Button adjustButton = findViewById(R.id.adjust_button);
         Button filterButton = findViewById(R.id.filter_button);
         Button editorButton = findViewById(R.id.editor_button);
 
         toggle(Feature.Filter);
 
-        cropButton.setOnClickListener(new View.OnClickListener() {
+        adjustButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(Feature.Crop);
+                toggle(Feature.Adjust);
             }
         });
         filterButton.setOnClickListener(new View.OnClickListener() {
@@ -270,11 +333,11 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
 
     private void toggle(Feature feature) {
         switch (feature) {
-            case Crop:
+            case Adjust:
                 uCropView.setVisibility(View.VISIBLE);
                 gpuImageView.setVisibility(View.GONE);
                 buttonContainer.setVisibility(View.GONE);
-                cropContainer.setVisibility(View.VISIBLE);
+                adjustContainer.setVisibility(View.VISIBLE);
                 filterContainer.setVisibility(View.GONE);
                 editorContainer.setVisibility(View.GONE);
                 break;
@@ -282,7 +345,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                 uCropView.setVisibility(View.GONE);
                 gpuImageView.setVisibility(View.VISIBLE);
                 buttonContainer.setVisibility(View.VISIBLE);
-                cropContainer.setVisibility(View.GONE);
+                adjustContainer.setVisibility(View.GONE);
                 filterContainer.setVisibility(View.VISIBLE);
                 editorContainer.setVisibility(View.GONE);
                 break;
@@ -290,7 +353,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                 uCropView.setVisibility(View.GONE);
                 gpuImageView.setVisibility(View.VISIBLE);
                 buttonContainer.setVisibility(View.VISIBLE);
-                cropContainer.setVisibility(View.GONE);
+                adjustContainer.setVisibility(View.GONE);
                 filterContainer.setVisibility(View.GONE);
                 editorContainer.setVisibility(View.VISIBLE);
                 break;

@@ -31,28 +31,73 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <LinearLayout
-            android:id="@+id/crop_container"
-            android:orientation="horizontal"
+        <RelativeLayout
+            android:id="@+id/adjust_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/crop_cancel_button"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/rotation_angle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/cancel"/>
+                android:layout_above="@+id/rotation_container"
+                android:layout_centerHorizontal="true"/>
 
-            <Button
-                android:id="@+id/crop_done_button"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/rotation_container"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/rotation_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_cancel"/>
+
+                <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
+                    android:id="@+id/rotation_wheel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+
+                <ImageView
+                    android:id="@+id/rotation_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_rotate"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/done"/>
+                android:layout_alignParentBottom="true">
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/adjust_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cancel"/>
+
+                <Button
+                    android:id="@+id/adjust_done"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/done"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/filter_container"
@@ -106,11 +151,11 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/crop_button"
+            android:id="@+id/adjust_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/crop"/>
+            android:text="@string/adjust"/>
 
         <Button
             android:id="@+id/filter_button"
