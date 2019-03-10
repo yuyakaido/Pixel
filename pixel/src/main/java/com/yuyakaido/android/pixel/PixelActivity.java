@@ -3,6 +3,7 @@ package com.yuyakaido.android.pixel;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
+import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.UCropView;
@@ -172,10 +174,16 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
                         new BitmapCropCallback() {
                             @Override
                             public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+                                Picasso.get().invalidate(resultUri);
                                 state.setOutputUri(resultUri);
                                 gpuImageView.setImage(resultUri);
                                 filterAdapter.notifyDataSetChanged();
-                                toggle(Feature.Filter);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        toggle(Feature.Filter);
+                                    }
+                                }, 200);
                             }
                             @Override
                             public void onCropFailure(@NonNull Throwable t) {
@@ -238,7 +246,7 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         Button filterButton = findViewById(R.id.filter_button);
         Button editorButton = findViewById(R.id.editor_button);
 
-        toggle(Feature.Crop);
+        toggle(Feature.Filter);
 
         cropButton.setOnClickListener(new View.OnClickListener() {
             @Override
