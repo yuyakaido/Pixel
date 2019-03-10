@@ -1,7 +1,6 @@
 package com.yuyakaido.android.pixel;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,7 +32,7 @@ class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.ViewHolder> {
     public void onBindViewHolder(final @NonNull ViewHolder holder, int position) {
         final Filter filter = state.getFilters().get(position);
         Picasso.get()
-                .load(Uri.parse("file:///android_asset/sample.jpg"))
+                .load(state.getOutputUri())
                 .transform(new LookupFilterTransformation(context, filter.lookupTableResourceId))
                 .into(holder.preview);
         if (state.isDirty(filter)) {

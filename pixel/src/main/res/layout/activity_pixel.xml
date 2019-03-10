@@ -17,6 +17,12 @@
             android:layout_height="match_parent">
         </jp.co.cyberagent.android.gpuimage.GPUImageView>
 
+        <com.yalantis.ucrop.view.UCropView
+            android:id="@+id/ucrop_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.yalantis.ucrop.view.UCropView>
+
     </com.yuyakaido.android.pixel.SquareRelativeLayout>
 
     <RelativeLayout
@@ -25,12 +31,34 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <LinearLayout
+            android:id="@+id/crop_container"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/crop_cancel_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel"/>
+
+            <Button
+                android:id="@+id/crop_done_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/done"/>
+
+        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/filter_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:visibility="visible">
+            android:layout_centerVertical="true">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/filter_recycler_view"
@@ -50,8 +78,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:visibility="gone">
+            android:layout_centerVertical="true">
 
             <SeekBar
                 android:id="@+id/seek_bar"
@@ -77,6 +104,13 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/crop_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/crop"/>
 
         <Button
             android:id="@+id/filter_button"

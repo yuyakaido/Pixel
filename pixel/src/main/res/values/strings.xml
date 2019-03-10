@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <string name="crop">Crop</string>
     <string name="filter">Filter</string>
     <string name="editor">Editor</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
 
     <string name="editor_brightness">Brightness</string>
     <string name="editor_contrast">Contrast</string>
