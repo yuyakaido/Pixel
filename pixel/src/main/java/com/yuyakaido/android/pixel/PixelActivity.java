@@ -1,6 +1,7 @@
 package com.yuyakaido.android.pixel;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -181,7 +182,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
         rotationCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cropImageView.postRotate(-cropImageView.getCurrentAngle());
+                rotationAngle.setText(getString(R.string.angle, 0));
+                cropImageView.setImageMatrix(new Matrix());
                 cropImageView.setImageToWrapCropBounds();
             }
         });
@@ -211,6 +213,8 @@ public class PixelActivity extends AppCompatActivity implements FilterListener, 
             @Override
             public void onClick(View v) {
                 toggle(Feature.Filter);
+                cropImageView.setImageMatrix(new Matrix());
+                rotationAngle.setText(getString(R.string.angle, 0));
             }
         });
         doneButton.setOnClickListener(new View.OnClickListener() {
