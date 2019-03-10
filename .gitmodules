@@ -1,0 +1,3 @@
+[submodule "uCrop"]
+	path = uCrop
+	url = https://github.com/Yalantis/uCrop
